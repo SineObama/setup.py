@@ -46,11 +46,7 @@ if not VERSION:
 else:
     about['__version__'] = VERSION
 
-
-class UploadCommand(Command):
-    """Support setup.py upload."""
-
-    description = 'Build and publish the package.'
+class MyCommand(Command):
     user_options = []
 
     @staticmethod
@@ -63,6 +59,11 @@ class UploadCommand(Command):
 
     def finalize_options(self):
         pass
+
+class UploadCommand(MyCommand):
+    """Support setup.py upload."""
+
+    description = 'Build and publish the package.'
 
     def run(self):
         try:
@@ -83,6 +84,38 @@ class UploadCommand(Command):
         
         sys.exit()
 
+class ReinstallCommand(MyCommand):
+    """repack the package and reinstall locally."""
+    def run(self):
+        try:
+            self.status('Removing previous builds…')
+            rmtree(os.path.join(here, 'dist'))
+        except OSError:
+            pass
+
+        self.status('Building Source and Wheel (universal) distribution…')
+        os.system('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
+
+        self.status('Uninstalling the package locally')
+        os.system('pip uninstall ' + NAME)
+
+        self.status('Installing the package locally')
+        for name in os.listdir('dist'):
+            if name.endswith('.whl'):
+                break
+        else:
+            self.status('internal error: can not find .whl file in dist/')
+            sys.exit()
+        os.system('pip install dist/' + name)
+        
+        sys.exit()
+
+class UninstallCommand(MyCommand):
+    def run(self):
+        self.status('Uninstalling the package locally')
+        os.system('pip uninstall ' + NAME)
+        
+        sys.exit()
 
 # Where the magic happens:
 setup(
@@ -118,5 +151,7 @@ setup(
     # $ setup.py publish support.
     cmdclass={
         'upload': UploadCommand,
+        'rei': ReinstallCommand,
+        'uni': UninstallCommand,
     },
 )
