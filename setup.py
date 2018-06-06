@@ -12,7 +12,8 @@ from setuptools import find_packages, setup, Command
 
 # Package meta-data.
 NAMESPACE = 'sine'
-NAME = NAMESPACE + '.module_name'
+MODULE_NAME = 'module_name'
+NAME = NAMESPACE + '.' + MODULE_NAME
 DESCRIPTION = 'package description'
 URL = 'https://github.com/SineObama/'
 EMAIL = '714186139@qq.com'
@@ -40,7 +41,7 @@ with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 # Load the package's __version__.py module as a dictionary.
 about = {}
 if not VERSION:
-    with open(os.path.join(here, NAMESPACE, '__version__.py')) as f:
+    with open(os.path.join(here, NAMESPACE, MODULE_NAME, '__version__.py')) as f:
         exec(f.read(), about)
 else:
     about['__version__'] = VERSION
