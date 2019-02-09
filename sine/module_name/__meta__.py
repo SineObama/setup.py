@@ -4,6 +4,9 @@
 #      ""b    88    88   i 88   88
 #  "booodP    88    88    i88   888888
 
-VERSION = (0, 0, 1)
+_VERSION = (0, 0, 1)
 
-__version__ = '.'.join(map(str, VERSION))
+DESCRIPTION = 'package description'
+URL = 'https://github.com/SineObama/'
+VERSION = '.'.join(map(str, _VERSION))
+REQUIRED = []
